@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 
-st.title("📊 Student Result Analyzer")
+st.title("🎓 Student Result Analyzer")
 
+# Input
 name = st.text_input("Student Name")
 
 maths = st.number_input("Maths Marks", 0, 100)
@@ -16,7 +17,7 @@ if st.button("Analyze Result"):
     total = maths + science + english
     percentage = total / 3
 
-    # Grade logic
+    # Grade & Stars
     if percentage >= 90:
         grade = "A+"
         stars = "⭐⭐⭐⭐⭐"
@@ -44,15 +45,24 @@ if st.button("Analyze Result"):
         "Stars": stars
     })
 
-    st.success("Result analyzed successfully 🎉")
+    st.success("Result added successfully ✅")
 
-# Show results
+# Display results
 if st.session_state.results:
     df = pd.DataFrame(st.session_state.results)
 
-    st.subheader("📋 Student Results")
+    st.subheader("📋 Student Results Table")
     st.dataframe(df)
 
-    st.subheader("📈 Percentage Chart")
-    st.bar_chart(df.set_index("Name")["Percentage"])
+    st.subheader("📊 Percentage Bar Chart")
+    st.bar_chart(
+        df.set_index("Name")[["Percentage"]]
+    )
 
+    st.subheader("📊 Subject-wise Marks (Last Student)")
+    last = df.iloc[-1]
+    subject_df = pd.DataFrame({
+        "Marks": [last["Maths"], last["Science"], last["English"]]
+    }, index=["Maths", "Science", "English"])
+
+    st.bar_chart(subject_df)
